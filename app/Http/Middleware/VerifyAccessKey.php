@@ -20,7 +20,7 @@ class VerifyAccessKey
         if ($request->isMethod('get')) {
             return $next($request);
         }
-        
+
         // Obtenim l’API-KEY que envia l’usuari
         $key = $request->headers->get('api-key');
         // Comprovem si coincideix amb en valor desat a la nostra aplicació
@@ -28,7 +28,7 @@ class VerifyAccessKey
             return $next($request);
         } else {
             // Si falla retornem un error en format JSON
-            return response()->json(['error' => 'unauthorized' ], 401);
+            return response()->json(['error' => 'unauthorized'], 401);
         }
     }
 }
