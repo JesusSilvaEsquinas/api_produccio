@@ -8,5 +8,5 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::resource('game', GameController::class)->only([
+Route::resource('games', GameController::class)->only([
     'index', 'store', 'update', 'destroy', 'show']);

@@ -13,7 +13,8 @@ class GameController extends Controller
      */
     public function index()
     {
-        return Games::all();
+        $games = Games::all();
+        return view('games.index', compact('games'));
     }
 
     /**
@@ -21,7 +22,7 @@ class GameController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -63,7 +64,8 @@ class GameController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $game = Games::findOrFail($id);
+        return view('games.edit', compact('game'));
     }
 
     /**
