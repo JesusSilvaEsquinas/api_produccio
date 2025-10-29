@@ -25,7 +25,7 @@
                 Benvingut
             </h1>
             <p class="text-lg md:text-xl text-neutral-400 font-light mb-12">
-                La teva aplicació està llesta per començar
+                Todo ready para comenzar
             </p>
         </div>
     </main>
