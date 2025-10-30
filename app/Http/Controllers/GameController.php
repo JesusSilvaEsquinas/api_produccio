@@ -38,14 +38,14 @@ class GameController extends Controller
             'description' => 'required',
         ];
 
-        // Executem el validador. Si falla retornem l’error
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-            return [
-                'created' => false,
-                'errors' => $validator->errors()->all()
-            ];
-        }
+        // // Executem el validador. Si falla retornem l’error
+        // $validator = Validator::make($request->all(), $rules);
+        // if ($validator->fails()) {
+        //     return [
+        //         'created' => false,
+        //         'errors' => $validator->errors()->all()
+        //     ];
+        // }
 
         Games::create($request->all());
         return ['created' => true];
