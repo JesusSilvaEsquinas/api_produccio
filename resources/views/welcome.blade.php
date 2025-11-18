@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CI/CD Laravel</title>
-    @vite('resources/css/app.css')
 </head>
 
 <body class="antialiased bg-neutral-950 text-neutral-100">
