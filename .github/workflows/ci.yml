@@ -81,3 +81,22 @@ jobs:
         # --no-coverage: no calculem cobertura (més ràpid per a una demo bàsica).
         # (Laravel invoca PHPUnit o Pest segons la config del projecte.)
         run: php artisan test --no-coverage
+
+  # Job de desplegament a Laravel Cloud. Només s'executa si 'tests' ha anat bé.
+  deploy:
+    # Aquest job DEPÈN del job 'tests': si falla, 'deploy' ni tan sols s'executa.
+    needs: tests
+    runs-on: ubuntu-latest
+
+    # Només volem desplegar en pushes a main, no en pull requests.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Trigger Laravel Cloud deploy
+        # Fem una petició HTTP al "deploy hook" de Laravel Cloud.
+        # Guarda la URL del hook com a secret LARAVEL_CLOUD_DEPLOY_HOOK al repo.
+        run: |
+          echo "Calling Laravel Cloud deploy hook..."
+          curl -f -X POST "${LARAVEL_CLOUD_DEPLOY_HOOK}"
+        env:
+          LARAVEL_CLOUD_DEPLOY_HOOK: ${{ secrets.LARAVEL_CLOUD_DEPLOY_HOOK }}
