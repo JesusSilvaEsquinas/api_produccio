@@ -17,6 +17,7 @@
         </nav>
     </header>
 
+    <!--Hola-->
     {{-- Contenido principal centrado --}}
     <main class="min-h-screen flex items-center justify-center px-6">
         <div class="text-center max-w-2xl">
