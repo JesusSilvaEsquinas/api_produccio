@@ -19,7 +19,7 @@ jobs:
     # 'ubuntu-latest' és l’últim Ubuntu que ofereix GitHub (normalment la millor opció per PHP).
     runs-on: ubuntu-latest
 
-    #hola
+    
     # Llista ordenada de passos dins del job 'tests'.
     steps:
       # Pas 1: descarregar el codi del repositori al runner.
