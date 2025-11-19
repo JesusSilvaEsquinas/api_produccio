@@ -62,6 +62,20 @@ jobs:
         # --optimize-autoloader: millora el temps de càrrega en producció/CI
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
+      # Pas 4.1: configurar Node.js per poder construir els assets de Vite.
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Pas 4.2: instal·lar dependències de Node (frontend).
+      - name: Install Node dependencies
+        run: npm ci
+
+      # Pas 4.3: construir els assets de Vite perquè existeixi public/build/manifest.json.
+      - name: Build frontend assets
+        run: npm run build
+
       # Pas 5: preparar l’entorn de proves.
       - name: Prepare environment
         # El tub '|' indica "multilínia": executarem aquestes comandes, una rere l’altra, al mateix pas.
