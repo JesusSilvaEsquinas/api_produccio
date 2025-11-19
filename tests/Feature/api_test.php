@@ -87,4 +87,11 @@ class ApiTest extends TestCase
 
         $this->assertDatabaseMissing('games', ['id' => $game->id]);
     }
+
+    public function test_ci_block_deploy_when_tests_fail()
+    {
+        // Test intencionadament fallit per comprovar que el workflow de CI
+        // marca l'execució com a fallida i no es fa el deploy.
+        $this->assertTrue(false);
+    }
 }
