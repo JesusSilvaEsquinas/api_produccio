@@ -1,12 +1,13 @@
 # Nom "humà" del workflow. Així és com el veurem a la pestanya Actions.
 name: CI (Laravel)
 
-# Bloc que defineix QUAN s’executa el workflow.
+# Bloc que defineix QUAN s'executa el workflow.
 on:
-  # 1) Es dispara en fer push a main i a branques de feature.
+  # 1) Es dispara en fer push a main, jesus i a branques de feature.
   push:
     branches:
       - main
+      - jesus
       - 'feature/*'
   # 2) També es dispara quan s’obre/actualitza un pull request cap a main.
   pull_request:
@@ -108,11 +109,69 @@ jobs:
         run: php artisan test --no-coverage
 
   # Job de desplegament a Laravel Cloud. Només s'executa si 'tests' ha anat bé.
+  auto-merge:
+    needs: tests
+    if: github.event_name == 'push' && github.ref != 'refs/heads/main' && !contains(github.event.head_commit.message, 'Merge pull request')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug Info
+        run: |
+          echo "=== Debug Information ==="
+          echo "Event: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "Ref name: ${{ github.ref_name }}"
+          echo "Head commit message: ${{ github.event.head_commit.message }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Workflow: ${{ github.workflow }}"
+          echo "SHA: ${{ github.sha }}"
+          echo "========================="
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Necesario para el historial completo de git
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Git
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git config --global pull.rebase false
+          git remote -v
+          git branch -a
+
+      - name: Merge into main
+        run: |
+          echo "Fetching main branch..."
+          git fetch origin main:main
+          
+          echo "Current branch: $(git branch --show-current)"
+          echo "Available branches:"
+          git branch -a
+          
+          echo "Checking out main..."
+          git checkout main
+          
+          echo "Pulling latest changes..."
+          git pull origin main
+          
+          echo "Merging ${{ github.ref_name }} into main..."
+          git merge --no-ff ${{ github.ref_name }} -m "Auto-merge ${{ github.ref_name }} into main [skip ci]"
+          
+          echo "Pushing changes to main..."
+          # Usar el token de autenticación para el push
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git config --global user.name 'GitHub Actions Bot'
+          git config --global user.email 'actions@github.com'
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   deploy:
     # Aquest job DEPÈN del job 'tests': si falla, 'deploy' ni tan sols s'executa.
-    needs: tests
+    needs: [tests, auto-merge]
     runs-on: ubuntu-latest
-
     # Només volem desplegar en pushes a main, no en pull requests.
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
