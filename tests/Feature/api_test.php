@@ -95,9 +95,13 @@ class ApiTest extends TestCase
         $this->assertTrue(false);
     }
     
-    public function test_fallo()
+    /**
+     * Test que falla explícitamente para verificar el CI
+     * @test
+     */
+    public function test_verificacion_ci()
     {
-        // Este test siempre fallará para verificar que el CI está funcionando
-        $this->assertEquals(1, 2, 'Este test falla intencionalmente para verificar el CI');
+        // Este test debe fallar para verificar que el CI está funcionando correctamente
+        $this->fail('PRUEBA DE FALLO DEL CI - fallo intencional');
     }
 }
