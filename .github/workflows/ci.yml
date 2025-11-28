@@ -113,26 +113,48 @@ jobs:
     if: github.event_name == 'push' && github.ref != 'refs/heads/main' && !contains(github.event.head_commit.message, 'Merge pull request')
     runs-on: ubuntu-latest
     steps:
+      - name: Debug Info
+        run: |
+          echo "Event: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "Ref name: ${{ github.ref_name }}"
+          echo "Head commit message: ${{ github.event.head_commit.message }}"
+          echo "Actor: ${{ github.actor }}"
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Necesario para el historial completo de git
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Git identity
+      - name: Set up Git
         run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
+          git config --global pull.rebase false
+          git remote -v
+          git branch -a
 
       - name: Merge into main
         run: |
-          # Asegurarse de tener el último estado de main
+          echo "Fetching main branch..."
           git fetch origin main:main
-          # Hacer checkout a main
+          
+          echo "Current branch: $(git branch --show-current)"
+          echo "Available branches:"
+          git branch -a
+          
+          echo "Checking out main..."
           git checkout main
-          # Hacer merge de la rama actual
+          
+          echo "Pulling latest changes..."
+          git pull origin main
+          
+          echo "Merging ${{ github.ref_name }} into main..."
           git merge --no-ff ${{ github.ref_name }} -m "Auto-merge ${{ github.ref_name }} into main [skip ci]"
-          # Hacer push del merge a main
-          git push origin main
+          
+          echo "Pushing changes to main..."
+          git push https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
