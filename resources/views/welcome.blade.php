@@ -22,7 +22,7 @@
     <main class="min-h-screen flex items-center justify-center px-6">
         <div class="text-center max-w-2xl">
             <h1 class="text-6xl md:text-7xl font-extralight tracking-tight mb-6">
-                Benvingutssss
+                Benvinguts
             </h1>
             <p class="text-lg md:text-xl text-neutral-400 font-light mb-12">
                 Todo ready para comenzar
