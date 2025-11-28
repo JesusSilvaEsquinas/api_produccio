@@ -1,12 +1,13 @@
 # Nom "humà" del workflow. Així és com el veurem a la pestanya Actions.
 name: CI (Laravel)
 
-# Bloc que defineix QUAN s’executa el workflow.
+# Bloc que defineix QUAN s'executa el workflow.
 on:
-  # 1) Es dispara en fer push a main i a branques de feature.
+  # 1) Es dispara en fer push a main, jesus i a branques de feature.
   push:
     branches:
       - main
+      - jesus
       - 'feature/*'
   # 2) També es dispara quan s’obre/actualitza un pull request cap a main.
   pull_request:
@@ -115,11 +116,16 @@ jobs:
     steps:
       - name: Debug Info
         run: |
+          echo "=== Debug Information ==="
           echo "Event: ${{ github.event_name }}"
           echo "Ref: ${{ github.ref }}"
           echo "Ref name: ${{ github.ref_name }}"
           echo "Head commit message: ${{ github.event.head_commit.message }}"
           echo "Actor: ${{ github.actor }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Workflow: ${{ github.workflow }}"
+          echo "SHA: ${{ github.sha }}"
+          echo "========================="
 
       - name: Checkout
         uses: actions/checkout@v4
