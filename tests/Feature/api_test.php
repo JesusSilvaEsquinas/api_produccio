@@ -94,4 +94,10 @@ class ApiTest extends TestCase
         // marca l'execució com a fallida i no es fa el deploy.
         $this->assertTrue(false);
     }
+    
+    public function test_fallo()
+    {
+        // Este test siempre fallará para verificar que el CI está funcionando
+        $this->assertEquals(1, 2, 'Este test falla intencionalmente para verificar el CI');
+    }
 }
