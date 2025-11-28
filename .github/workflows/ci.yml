@@ -110,8 +110,12 @@ jobs:
 
   # Job de desplegament a Laravel Cloud. Només s'executa si 'tests' ha anat bé.
   auto-merge:
-    needs: tests
-    if: github.event_name == 'push' && github.ref != 'refs/heads/main' && !contains(github.event.head_commit.message, 'Merge pull request')
+    needs: [tests]
+    if: |
+      needs.tests.result == 'success' && 
+      github.event_name == 'push' && 
+      github.ref != 'refs/heads/main' && 
+      !contains(github.event.head_commit.message, 'Merge pull request')
     runs-on: ubuntu-latest
     steps:
       - name: Debug Info
@@ -169,11 +173,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
-    # Aquest job DEPÈN del job 'tests': si falla, 'deploy' ni tan sols s'executa.
+    # Aquest job DEPÈN del job 'tests' i 'auto-merge': si fallen, 'deploy' ni tan sols s'executa.
     needs: [tests, auto-merge]
     runs-on: ubuntu-latest
     # Només volem desplegar en pushes a main, no en pull requests.
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: |
+      needs.tests.result == 'success' &&
+      needs.auto-merge.result == 'success' &&
+      github.event_name == 'push' && 
+      github.ref == 'refs/heads/main'
 
     steps:
       - name: Trigger Laravel Cloud deploy
